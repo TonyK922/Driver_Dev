@@ -1,0 +1,1 @@
+cmd_/home/book/nfs_rootfs/led_bus_dev_drv/chip_demo_gpio.ko := arm-buildroot-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/book/nfs_rootfs/led_bus_dev_drv/chip_demo_gpio.ko /home/book/nfs_rootfs/led_bus_dev_drv/chip_demo_gpio.o /home/book/nfs_rootfs/led_bus_dev_drv/chip_demo_gpio.mod.o ;  true

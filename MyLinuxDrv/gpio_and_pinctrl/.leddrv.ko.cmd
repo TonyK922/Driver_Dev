@@ -1,0 +1,1 @@
+cmd_/home/book/nfs_rootfs/gpio_and_pinctrl/leddrv.ko := arm-buildroot-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/book/nfs_rootfs/gpio_and_pinctrl/leddrv.ko /home/book/nfs_rootfs/gpio_and_pinctrl/leddrv.o /home/book/nfs_rootfs/gpio_and_pinctrl/leddrv.mod.o ;  true

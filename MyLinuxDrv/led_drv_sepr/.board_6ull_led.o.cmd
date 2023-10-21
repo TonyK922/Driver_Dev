@@ -1,0 +1,10 @@
+cmd_/home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.o := arm-buildroot-linux-gnueabihf-gcc -Wp,-MD,/home/book/nfs_rootfs/led_drv_sepr/.board_6ull_led.o.d -nostdinc -isystem /home/book/100ask_imx6ull-sdk/ToolChain/arm-buildroot-linux-gnueabihf_sdk-buildroot/bin/../lib/gcc/arm-buildroot-linux-gnueabihf/7.5.0/include -I./arch/arm/include -I./arch/arm/include/generated/uapi -I./arch/arm/include/generated  -I./include -I./arch/arm/include/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -std=gnu89 -fno-PIE -fno-dwarf2-cfi-asm -fno-omit-frame-pointer -mapcs -mno-sched-prolog -fno-ipa-sra -mabi=aapcs-linux -mno-thumb-interwork -mfpu=vfp -funwind-tables -marm -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-int-in-bool-context -O2 --param=allow-store-data-races=0 -DCC_HAVE_ASM_GOTO -Wframe-larger-than=1024 -fno-stack-protector -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-var-tracking-assignments -pg -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=implicit-int -Werror=strict-prototypes -Werror=date-time -Werror=incompatible-pointer-types  -DMODULE  -DKBUILD_BASENAME='"board_6ull_led"'  -DKBUILD_MODNAME='"100ask_led"' -c -o /home/book/nfs_rootfs/led_drv_sepr/.tmp_board_6ull_led.o /home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.c
+
+source_/home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.o := /home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.c
+
+deps_/home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.o := \
+  /home/book/nfs_rootfs/led_drv_sepr/led_resource.h \
+
+/home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.o: $(deps_/home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.o)
+
+$(deps_/home/book/nfs_rootfs/led_drv_sepr/board_6ull_led.o):

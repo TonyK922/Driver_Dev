@@ -1,0 +1,1 @@
+cmd_/home/book/nfs_rootfs/led_bus_dev_drv/board_A_led.ko := arm-buildroot-linux-gnueabihf-ld -EL -r  -T ./scripts/module-common.lds --build-id  -o /home/book/nfs_rootfs/led_bus_dev_drv/board_A_led.ko /home/book/nfs_rootfs/led_bus_dev_drv/board_A_led.o /home/book/nfs_rootfs/led_bus_dev_drv/board_A_led.mod.o ;  true
