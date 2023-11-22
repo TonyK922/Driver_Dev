@@ -789,11 +789,40 @@ static int gic_irq_domain_translate(struct irq_domain *d,
 
 ##  3. 编程
 
-会涉及2个驱动程序: 虚拟的`中断控制器驱动程序`, `按键驱动程序`, 以及对应的设备树.
+会涉及2个驱动程序: 虚拟的`中断控制器驱动程序`, `按键驱动程序`, 以及对应的设备树. 
+
+构造一个irq_domain 有三种方法, irq_domain_add_legacy, irq_domain_add_linear, irq_domain_add_hierarchy.
 
 中断控制器:
 
 ```c
+static struct irq_chip virtual_intc_irq_chip = {
+    .name         = "100ask_virtual_intc",
+    .irq_ack      = virtual_intc_irq_ack,
+    .irq_mask     = virtual_intc_irq_mask,
+    .irq_mask_ack = virtual_intc_irq_mask_ack,
+    .irq_unmask   = virtual_intc_irq_unmask,
+    .irq_eoi      = virtual_intc_irq_eoi,
+};
+static int virtual_intc_irq_map(struct irq_domain* h,unsigned int virq,irq_hw_number_t hw)
+{
+    /* 1. 给virq提供处理函数
+     * 2. 提供irq_chip用来mask/unmask中断
+     */
+
+    irq_set_chip_data(virq, h->host_data);
+    irq_set_chip_and_handler(virq, &virtual_intc_irq_chip,
+                             handle_edge_irq); /* handle_edge_irq就是handleC */
+    // irq_set_nested_thread(virq, 1);
+    // irq_set_noprobe(virq);
+    /* irq_set_nested_thread表示 request_irq时必须提供线程函数 */
+
+    return 0;
+}
+static const struct irq_domain_ops virtual_intc_domain_ops = {
+    .xlate = irq_domain_xlate_onetwocell,
+    .map   = virtual_intc_irq_map,
+};
 static int virtual_intc_probe(struct platform_device* pdev)
 {
     int irq_to_parent;
@@ -802,14 +831,17 @@ static int virtual_intc_probe(struct platform_device* pdev)
     irq_to_parent = platform_get_irq(pdev, 0);
 
     /* 1.2 设置irq_desc[].handle_irq (handleB),
-     *  其功能是分辨hwirq, 调用对应的设置irq_desc[].handle_irq */
+     * 其功能是分辨hwirq, 调用对应的设置irq_desc[].handle_irq 
+     * 这个就是GIC中断控制器驱动程序的handle函数. */
     irq_set_chained_handler_and_data(irq_to_parent, virtual_intc_irq_handler,
                                      NULL);
 
     /* 2. 分配/设置/注册一个irq_domain */
+    irq_base            = irq_alloc_descs(-1, 0, 4, numa_node_id());
+    virtual_intc_domain = irq_domain_add_legacy(np, 4, irq_base, 0,
+                                                &virtual_intc_domain_ops, NULL);
     return 0;
 }
-
 static void virtual_intc_irq_handler(struct irq_desc* desc)
 {
     //分辨hwirq, 调用对应的设置irq_desc[].handle_irq
@@ -818,8 +850,15 @@ static void virtual_intc_irq_handler(struct irq_desc* desc)
 
     struct irq_chip* chip = irq_desc_get_chip(desc);
     chained_irq_enter(chip, desc); /*调用irq_dataA 中的irq_chip 屏蔽中断*/
-
+ 	/* a. 分辨中断 对于实际硬件去读寄存器 */
+    hwirq = virtual_intc_get_hwirq();
+    /* b. 调用irq_desc[].handle_irq(handleC) */
+    generic_handle_irq(irq_find_mapping(virtual_intc_domain, hwirq));
+    
     chained_irq_exit(chip, desc); /*调用irq_dataA 中的irq_chip 恢复中断*/
 }
 ```
 
+- **chained_irq_enter**(chip, desc); 会去调用 irq_dataA 中的irq_chip 屏蔽中断.
+- irq_find_mapping(domain,hwirq); 从给的domain 跟 hwirq找到 这个hwirq对应的虚拟中断号virq. 再用这个virq 去调用**handle_irq**函数.
+    - 这个handle_irq 就是GPIO中断控制器的 handle函数.
