@@ -1,0 +1,15 @@
+        vitural_spi_master {
+                compatible = "100ask,virtual_spi_master";
+                status = "okay";
+                cs-gpios = <&gpio4 27 GPIO_ACTIVE_LOW>;
+                num-chipselects = <1>;
+                #address-cells = <1>;
+                #size-cells = <0>;
+
+                virtual_spi_dev: virtual_spi_dev@0 {
+                        compatible = "spidev";
+                        reg = <0>;
+                        spi-max-frequency = <100000>;
+                };
+        };
+
